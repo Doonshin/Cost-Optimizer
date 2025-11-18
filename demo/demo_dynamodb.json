@@ -1,0 +1,51 @@
+[
+  {
+    "resource_id": "DynamoDB-A",
+    "configuration": {
+      "billing_mode": "PROVISIONED",
+      "read_capacity_units": 1000,
+      "write_capacity_units": 500,
+      "indexes": ["UserEmailIndex", "LastLoginIndex", "RegionIndex"],
+      "ttl_enabled": false,
+      "storage_gb": 5
+    },
+    "description": "This table stores user login data but receives fewer than 10 requests per minute. Most of the secondary indexes are rarely queried, and TTL is disabled, keeping old session data indefinitely."
+  },
+  {
+    "resource_id": "DynamoDB-B",
+    "configuration": {
+      "billing_mode": "ON_DEMAND",
+      "avg_read_per_second": 400,
+      "avg_write_per_second": 250,
+      "storage_gb": 100,
+      "indexes": []
+    },
+    "description": "This workload handles stable, high-volume transaction data using on-demand mode, which causes unnecessary cost. It should use provisioned mode with auto-scaling for predictable traffic."
+  },
+  {
+    "resource_id": "DynamoDB-C",
+    "configuration": {
+      "billing_mode": "PROVISIONED",
+      "read_capacity_units": 50,
+      "write_capacity_units": 10,
+      "auto_scaling": false,
+      "avg_peak_read": 500,
+      "avg_peak_write": 200,
+      "indexes": ["ActivityIndex"]
+    },
+    "description": "The table receives unpredictable traffic spikes up to 500 reads per second, but auto-scaling is disabled. Frequent throttling leads to retries, increasing the effective cost per request."
+  },
+  {
+    "resource_id": "DynamoDB-D",
+    "configuration": {
+      "billing_mode": "PROVISIONED",
+      "read_capacity_units": 200,
+      "write_capacity_units": 100,
+      "ttl_enabled": false,
+      "backup_enabled": true,
+      "backup_type": "PITR",
+      "storage_gb": 200
+    },
+    "description": "This analytics table stores old metrics and logs that are rarely accessed but kept indefinitely. Point-in-time recovery backups are always enabled, leading to excessive storage costs."
+  }
+]

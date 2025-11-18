@@ -1,0 +1,94 @@
+{
+  "lambda_functions": [
+    {
+      "function_id": "function_1",
+      "configuration": {
+        "timeout_seconds": 30,
+        "memory_mb": 2048
+      },
+      "usage_logs": [
+        "START RequestId: a111 Version: $LATEST",
+        "2025-02-10T09:12:01.100Z INFO Processing request user_id=91322",
+        "END RequestId: a111",
+        "REPORT RequestId: a111 Duration: 120 ms Billed Duration: 200 ms Memory Size: 2048 MB Max Memory Used: 185 MB"
+      ],
+      "metrics": {
+        "invocations": 980,
+        "errors": 0,
+        "timeouts": 0,
+        "throttles": 0,
+        "avg_duration_ms": 118,
+        "p95_duration_ms": 150,
+        "max_memory_used_mb": 185,
+        "cold_starts": 4
+      },
+      "cost": {
+        "lambda_gb_seconds": 401.408,
+        "lambda_cost_usd": 0.0481,
+        "request_count": 980,
+        "request_cost_usd": 0.000196,
+        "total_cost_usd": 0.0483
+      }
+    },
+    {
+      "function_id": "function_2",
+      "configuration": {
+        "timeout_seconds": 30,
+        "memory_mb": 128
+      },
+      "usage_logs": [
+        "START RequestId: b222 Version: $LATEST",
+        "2025-02-10T09:25:14.551Z INFO Processing job bucket=my-bucket key=img_4421.png",
+        "END RequestId: b222",
+        "REPORT RequestId: b222 Duration: 8900 ms Billed Duration: 9000 ms Memory Size: 128 MB Max Memory Used: 124 MB"
+      ],
+      "metrics": {
+        "invocations": 620,
+        "errors": 42,
+        "timeouts": 0,
+        "throttles": 17,
+        "avg_duration_ms": 8720,
+        "p95_duration_ms": 9300,
+        "max_memory_used_mb": 124,
+        "cold_starts": 22
+      },
+      "cost": {
+        "lambda_gb_seconds": 712.704,
+        "lambda_cost_usd": 0.0854,
+        "request_count": 620,
+        "request_cost_usd": 0.000124,
+        "total_cost_usd": 0.0855
+      }
+    },
+    {
+      "function_id": "function_3",
+      "configuration": {
+        "timeout_seconds": 3,
+        "memory_mb": 512
+      },
+      "usage_logs": [
+        "START RequestId: c333 Version: $LATEST",
+        "2025-02-10T09:41:02.101Z INFO Executing batch ETL records=55",
+        "2025-02-10T09:41:05.302Z ERROR Task timed out after 3.00 seconds",
+        "REPORT RequestId: c333 Duration: 3000 ms Billed Duration: 3000 ms Memory Size: 512 MB Max Memory Used: 321 MB"
+      ],
+      "metrics": {
+        "invocations": 310,
+        "errors": 310,
+        "timeouts": 310,
+        "throttles": 0,
+        "avg_duration_ms": 3000,
+        "p95_duration_ms": 3000,
+        "max_memory_used_mb": 321,
+        "cold_starts": 6
+      },
+      "cost": {
+        "lambda_gb_seconds": 476.160,
+        "lambda_cost_usd": 0.0570,
+        "request_count": 310,
+        "request_cost_usd": 0.000062,
+        "total_cost_usd": 0.0571
+      }
+    }
+  ]
+}

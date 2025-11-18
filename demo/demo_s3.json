@@ -1,0 +1,60 @@
+[
+  {
+    "resource_id": "S3-A",
+    "configuration": {
+      "storage_class": "Standard",
+      "object_count": 1200,
+      "total_storage_gb": 1024
+    },
+    "description": "The bucket stores archived data that is rarely accessed, typically less than once a year."
+  },
+  {
+    "resource_id": "S3-B",
+    "configuration": {
+      "storage_class": "Glacier",
+      "object_count": 5000,
+      "retrieval_gb_per_day": 100
+    },
+    "description": "The bucket contains files that are frequently restored for daily use from Glacier storage."
+  },
+  {
+    "resource_id": "S3-C",
+    "configuration": {
+      "versioning_enabled": true,
+      "average_versions_per_object": 1000
+    },
+    "description": "The bucket maintains versioning for objects and keeps all versions indefinitely, with old versions accumulating over time."
+  },
+  {
+    "resource_id": "S3-D",
+    "configuration": {
+      "multipart_upload_enabled": true,
+      "uncompleted_parts_gb": 20
+    },
+    "description": "The bucket contains large multipart uploads that have remained incomplete for a long time."
+  },
+  {
+    "resource_id": "S3-E",
+    "configuration": {
+      "object_count": 10000000,
+      "average_object_size_kb": 10
+    },
+    "description": "The bucket stores millions of small log files that are uploaded continuously throughout the day."
+  },
+  {
+    "resource_id": "S3-F",
+    "configuration": {
+      "cross_region_replication": true,
+      "replica_region": "us-west-2"
+    },
+    "description": "The bucket replicates all data to another AWS region even though there are no applications using the replicated data."
+  },
+  {
+    "resource_id": "S3-J",
+    "configuration": {
+      "list_operations_per_hour": 500,
+      "application_listing_mode": "full_scan"
+    },
+    "description": "Applications perform frequent full scans to list all objects in the bucket, leading to many LIST operations each hour."
+  }
+]

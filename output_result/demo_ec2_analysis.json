@@ -1,0 +1,44 @@
+[
+  {
+    "resource_id": "EC2-A",
+    "resource_type": "EC2 Instance",
+    "detected_issue": "Instance appears over-provisioned for a light, steady workload and runs 24/7.",
+    "reasoning": "t3.large (2 vCPU, 8 GB) is excessive for \"a few user requests each day\" and continuous operation increases on-demand cost.",
+    "optimization_suggestion": "Right-size to a smaller burstable instance (e.g., t3.small or t3.micro; or t4g.small/micro if ARM64-compatible); alternatively move the web endpoint to AWS Lambda + API Gateway for event-driven pricing; if it must run 24/7 on EC2, purchase a 1- or 3-year Compute Savings Plan to reduce hourly cost."
+  },
+  {
+    "resource_id": "EC2-B",
+    "resource_type": "EC2 Instance",
+    "detected_issue": "Burstable t3.micro is a poor fit for frequent compute-heavy periods and may incur CPU credit throttling or Unlimited surcharges.",
+    "reasoning": "Frequent computations during job runs will quickly deplete t3.micro CPU credits (10% baseline), leading to throttling or extra charges in T3 Unlimited.",
+    "optimization_suggestion": "Move to a fixed-performance compute-optimized family for job windows (e.g., c6i.large x86 or c7g.large Graviton if compatible); consider Spot Instances or AWS Batch for up to 70–90% savings on interruptible processing; if staying on T-class, size up (e.g., t3.medium) and monitor/limit T3 Unlimited surplus charges."
+  },
+  {
+    "resource_id": "EC2-C",
+    "resource_type": "EC2 Instance",
+    "detected_issue": "Idle test instance running continuously.",
+    "reasoning": "The instance was for testing and \"rarely handles any activity,\" yet it accrues compute charges 24/7.",
+    "optimization_suggestion": "Stop or terminate when not in use (create an AMI/snapshot to preserve state); automate off-hours shutdown with AWS Instance Scheduler; if it must be available intermittently, switch to a smaller/cheaper instance (e.g., t3.nano) or Spot for non-critical testing."
+  },
+  {
+    "resource_id": "EC2-D",
+    "resource_type": "EC2 Instance",
+    "detected_issue": "Large attached block storage for data accessed only occasionally; potential over-sizing of both storage and compute.",
+    "reasoning": "500 GB EBS is billed per GB-month regardless of access; the service performs only occasional reads/writes, indicating much of the data may be cold and better suited to object storage. t3.medium may also be larger than needed for occasional operations.",
+    "optimization_suggestion": "Migrate files to Amazon S3 and use lifecycle policies (e.g., Standard → Standard-IA/Glacier) to cut storage cost; keep only hot working set on EBS and shrink the EBS volume; if the volume is gp2, convert to gp3 to reduce $/GB and tune IOPS/throughput; consider right-sizing compute to t3.small if resource usage is low."
+  },
+  {
+    "resource_id": "EC2-E",
+    "resource_type": "EC2 Instance",
+    "detected_issue": "Using older-generation t2.micro for an HTTP endpoint with variable and numerous requests; risk of CPU credit depletion and suboptimal price/performance.",
+    "reasoning": "T2 has lower baseline and higher cost per performance than newer generations; variable high request volumes can exhaust credits and throttle.",
+    "optimization_suggestion": "Migrate to t3.micro (x86) or t4g.micro (Graviton, if compatible) for better price/perf; consider an Auto Scaling Group behind an ALB to handle variable load; for highly variable/peaky traffic, evaluate moving the endpoint to AWS Lambda + API Gateway; if running 24/7, use a Compute Savings Plan."
+  },
+  {
+    "resource_id": "EC2-F",
+    "resource_type": "EC2 Instance",
+    "detected_issue": "Older-generation m4.large running continuously; likely missing out on newer-gen price/performance and commitment discounts.",
+    "reasoning": "Continuous background service on m4 (older family) suggests an opportunity to modernize to newer families with lower $/vCPU and to apply long-running discounts.",
+    "optimization_suggestion": "Migrate to a newer family of similar size (e.g., m6i.large x86 or m7g.large Graviton if compatible) to reduce cost and improve performance; update the AMI during migration; purchase a 1- or 3-year Compute Savings Plan (or Standard RI) given continuous operation."
+  }
+]

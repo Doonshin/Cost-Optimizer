@@ -1,0 +1,26 @@
+[
+  {
+    "function_id": "Function_1",
+    "configuration": {
+      "timeout_seconds": 3,
+      "memory_mb": 128
+    },
+    "description": "Execution sometimes reaches the timeout limit and fails to complete processing."
+  },
+  {
+    "function_id": "Function_2",
+    "configuration": {
+      "timeout_seconds": 10,
+      "memory_mb": 1024
+    },
+    "description": "Each execution finishes in less than a second."
+  },
+  {
+    "function_id": "Function_3",
+    "configuration": {
+      "timeout_seconds": 30,
+      "memory_mb": 256
+    },
+    "description": "It typically completes execution in about two seconds. It runs multiple times per day without significant CPU load."
+  }
+]

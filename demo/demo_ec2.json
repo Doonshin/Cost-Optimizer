@@ -1,0 +1,201 @@
+[
+  {
+    "instance_id": "EC2-A",
+    "configuration": {
+      "instance_type": "t3.large",
+      "vCPU": 2,
+      "memory_gb": 8,
+      "lifecycle": "on-demand",
+      "availability_zone": "us-east-1a",
+      "os": "Amazon Linux 2"
+    },
+    "metrics": {
+      "cpu_utilization_avg": 2.3,
+      "cpu_utilization_p95": 5.2,
+      "network_in_mb": 91.4,
+      "network_out_mb": 84.7,
+      "disk_read_ops": 120,
+      "disk_write_ops": 55,
+      "status_check_failed": 0,
+      "credit_balance": 144
+    },
+    "billing": {
+      "period": "2025-01-01 to 2025-01-31",
+      "on_demand_cost_usd": 63.84,
+      "ebs_cost_usd": 5.10,
+      "data_transfer_cost_usd": 0.94,
+      "total_cost_usd": 69.88
+    },
+    "usage_logs": [
+      "2025-01-21T01:14:45Z nginx access log: 200 GET /health",
+      "2025-01-21T09:21:02Z nginx access log: 200 GET /",
+      "2025-01-22T14:10:33Z systemd: daily security updates completed"
+    ]
+  },
+  {
+    "instance_id": "EC2-B",
+    "configuration": {
+      "instance_type": "t3.micro",
+      "vCPU": 2,
+      "memory_gb": 1,
+      "lifecycle": "on-demand",
+      "availability_zone": "us-east-1c",
+      "os": "Ubuntu 22.04"
+    },
+    "metrics": {
+      "cpu_utilization_avg": 78.2,
+      "cpu_utilization_p95": 94.5,
+      "memory_usage_pct": 91.3,
+      "network_in_mb": 512.2,
+      "network_out_mb": 488.9,
+      "disk_read_ops": 12820,
+      "disk_write_ops": 14493,
+      "status_check_failed": 0,
+      "credit_balance": 0
+    },
+    "billing": {
+      "period": "2025-01-01 to 2025-01-31",
+      "on_demand_cost_usd": 7.73,
+      "ebs_cost_usd": 1.25,
+      "data_transfer_cost_usd": 3.40,
+      "total_cost_usd": 12.38
+    },
+    "usage_logs": [
+      "2025-01-20T02:33:01Z python job: processing batch 551 completed",
+      "2025-01-20T04:41:12Z WARNING: CPU credits depleted, throttling observed",
+      "2025-01-20T04:41:13Z kernel: cgroup cpu throttling event"
+    ]
+  },
+  {
+    "instance_id": "EC2-C",
+    "configuration": {
+      "instance_type": "t3.small",
+      "vCPU": 2,
+      "memory_gb": 2,
+      "lifecycle": "on-demand",
+      "availability_zone": "us-east-1b",
+      "os": "Amazon Linux 2023"
+    },
+    "metrics": {
+      "cpu_utilization_avg": 0.4,
+      "cpu_utilization_p95": 1.0,
+      "network_in_mb": 3.2,
+      "network_out_mb": 2.7,
+      "disk_read_ops": 12,
+      "disk_write_ops": 3,
+      "status_check_failed": 0,
+      "credit_balance": 244
+    },
+    "billing": {
+      "period": "2025-01-01 to 2025-01-31",
+      "on_demand_cost_usd": 14.60,
+      "ebs_cost_usd": 0.80,
+      "data_transfer_cost_usd": 0.00,
+      "total_cost_usd": 15.40
+    },
+    "usage_logs": [
+      "2025-01-18T01:00:00Z system idle",
+      "2025-01-19T01:00:00Z system idle",
+      "2025-01-20T01:00:00Z system idle"
+    ]
+  },
+  {
+    "instance_id": "EC2-D",
+    "configuration": {
+      "instance_type": "t3.medium",
+      "vCPU": 2,
+      "memory_gb": 4,
+      "attached_storage_gb": 500,
+      "lifecycle": "on-demand",
+      "availability_zone": "us-east-1c",
+      "os": "Ubuntu 20.04"
+    },
+    "metrics": {
+      "cpu_utilization_avg": 11.2,
+      "cpu_utilization_p95": 27.7,
+      "network_in_mb": 488.2,
+      "network_out_mb": 522.1,
+      "disk_read_ops": 42033,
+      "disk_write_ops": 55322,
+      "status_check_failed": 0,
+      "credit_balance": 160
+    },
+    "billing": {
+      "period": "2025-01-01 to 2025-01-31",
+      "on_demand_cost_usd": 31.45,
+      "ebs_cost_usd": 47.80,
+      "data_transfer_cost_usd": 5.14,
+      "total_cost_usd": 84.39
+    },
+    "usage_logs": [
+      "2025-01-18T14:22:04Z file service: write operation 200MB",
+      "2025-01-19T08:15:44Z file service: cleanup operation",
+      "2025-01-20T09:41:00Z file service: read operation 120MB"
+    ]
+  },
+  {
+    "instance_id": "EC2-E",
+    "configuration": {
+      "instance_type": "t2.micro",
+      "vCPU": 1,
+      "memory_gb": 1,
+      "lifecycle": "on-demand",
+      "availability_zone": "us-east-1d",
+      "os": "Amazon Linux 2"
+    },
+    "metrics": {
+      "cpu_utilization_avg": 32.5,
+      "cpu_utilization_p95": 61.0,
+      "network_in_mb": 884.3,
+      "network_out_mb": 996.2,
+      "disk_read_ops": 3104,
+      "disk_write_ops": 4888,
+      "status_check_failed": 0,
+      "credit_balance": 9
+    },
+    "billing": {
+      "period": "2025-01-01 to 2025-01-31",
+      "on_demand_cost_usd": 7.30,
+      "ebs_cost_usd": 0.60,
+      "data_transfer_cost_usd": 3.94,
+      "total_cost_usd": 11.84
+    },
+    "usage_logs": [
+      "2025-01-20T12:34:22Z httpd: GET /api/v1/items",
+      "2025-01-20T12:34:22Z httpd: GET /api/v1/items",
+      "2025-01-20T12:34:22Z httpd: POST /api/v1/items"
+    ]
+  },
+  {
+    "instance_id": "EC2-F",
+    "configuration": {
+      "instance_type": "m4.large",
+      "vCPU": 2,
+      "memory_gb": 8,
+      "lifecycle": "reserved-instance",
+      "availability_zone": "us-east-1a",
+      "os": "Ubuntu 18.04 (EOL)"
+    },
+    "metrics": {
+      "cpu_utilization_avg": 9.1,
+      "cpu_utilization_p95": 21.5,
+      "network_in_mb": 112.8,
+      "network_out_mb": 102.1,
+      "disk_read_ops": 1882,
+      "disk_write_ops": 2999,
+      "status_check_failed": 0
+    },
+    "billing": {
+      "period": "2025-01-01 to 2025-01-31",
+      "ri_amortized_usd": 42.00,
+      "ebs_cost_usd": 2.60,
+      "data_transfer_cost_usd": 0.50,
+      "total_cost_usd": 45.10
+    },
+    "usage_logs": [
+      "2025-01-22T10:14:33Z job executor: completed background task batch=91",
+      "2025-01-22T11:03:22Z WARNING: deprecated system image in use"
+    ],
+    "workload_summary": "Older generation instance. Could migrate to m6i.large for cost/performance gains."
+  }
+]
