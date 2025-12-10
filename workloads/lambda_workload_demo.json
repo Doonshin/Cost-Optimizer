@@ -1,6 +1,7 @@
-{
-  "lambda_functions": [
-    {
+[
+  {
+    "input": {
+      "resource_type": "lambda_function",
       "function_id": "function_1",
       "configuration": {
         "timeout_seconds": 30,
@@ -30,7 +31,15 @@
         "total_cost_usd": 0.0483
       }
     },
-    {
+    "ground_truth": {
+      "issue_detected": "over_provisioned_memory",
+      "recommended_action": "reduce_memory"
+    }
+  },
+
+  {
+    "input": {
+      "resource_type": "lambda_function",
       "function_id": "function_2",
       "configuration": {
         "timeout_seconds": 30,
@@ -60,7 +69,15 @@
         "total_cost_usd": 0.0855
       }
     },
-    {
+    "ground_truth": {
+      "issue_detected": "under_provisioned_memory",
+      "recommended_action": "increase_memory"
+    }
+  },
+
+  {
+    "input": {
+      "resource_type": "lambda_function",
       "function_id": "function_3",
       "configuration": {
         "timeout_seconds": 3,
@@ -89,6 +106,10 @@
         "request_cost_usd": 0.000062,
         "total_cost_usd": 0.0571
       }
+    },
+    "ground_truth": {
+      "issue_detected": "timeout_failure",
+      "recommended_action": "increase_timeout"
     }
-  ]
-}
+  }
+]

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 # ---------------------------------------------------------
-# Load API Key
+# Load API key
 # ---------------------------------------------------------
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
@@ -14,14 +14,13 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 # ---------------------------------------------------------
-# SYSTEM PROMPT (Final, strict, with Lambda rules)
+# SYSTEM PROMPT (ENUM + FORMAT CONTROL)
 # ---------------------------------------------------------
 SYSTEM_PROMPT = """
 You are an AWS FinOps optimization expert.
-
 Your job is to analyze cloud workloads (Lambda or EC2) and output STRICT JSON.
 
-You MUST obey all rules below:
+You MUST obey ALL rules below. Violating ANY rule is not allowed.
 
 -----------------------------------------------------
 ### 1. STRICT CATEGORY ENUM (NO OTHER VALUES ALLOWED)
@@ -48,162 +47,189 @@ If the resource_type == "ec2_instance":
       "healthy_utilization"
     ]
 
-DO NOT output natural language in issue_detected.
-DO NOT invent new categories.
+
+### REQUIRED ENUM for recommended_action (ABSOLUTELY NO NATURAL LANGUAGE)
+
+If the resource_type == "lambda_function":
+    recommended_action MUST be one of:
+    [
+      "reduce_memory",
+      "increase_memory",
+      "increase_timeout",
+      "mitigate_cold_starts",
+      "resolve_throttling",
+      "none"
+    ]
+
+If the resource_type == "ec2_instance":
+    recommended_action MUST be one of:
+    [
+      "downsizing_instance",
+      "scale_up_instance",
+      "stop_or_terminate",
+      "migrate_to_gp3_or_reduce_storage",
+      "no_change",
+      "upgrade_or_rebuild_instance"
+    ]
+
+DO NOT output any other values.
 DO NOT alter spelling.
+DO NOT create new enums.
+DO NOT output natural language.
+
 
 -----------------------------------------------------
-### 2. HARD DECISION RULES (MANDATORY FOR LAMBDA)
+### 2. JSON OUTPUT FORMAT (ABSOLUTELY STRICT)
 
-For Lambda memory analysis:
-- If max_memory_used_mb < 0.3 * configured_memory_mb → issue_detected = "over_provisioned_memory"
-- If max_memory_used_mb > 0.8 * configured_memory_mb → issue_detected = "under_provisioned_memory"
-- If timeouts > 0 → issue_detected = "timeout_failure"
-- If throttles > 0 → issue_detected = "throttling"
-- If cold_starts > 10 → issue_detected = "cold_start_issue"
-- Otherwise → "healthy"
-
------------------------------------------------------
-### 3. JSON FORMAT RULES
-
-For Lambda:
+For Lambda output:
 {
   "<function_id>": {
     "issue_detected": "ENUM_VALUE",
-    "recommended_action": "string",
-    "optimal_parameters": {
-      "memory_mb": <number or null>,
-      "timeout_seconds": <number or null>
+    "recommended_action": "ENUM_VALUE"
     }
   }
 }
 
-For EC2:
+For EC2 output:
 {
   "<instance_id>": {
     "issue_detected": "ENUM_VALUE",
-    "recommended_action": "string",
-    "optimal_parameters": {}
+    "recommended_action": "ENUM_VALUE"
   }
 }
 
+
 -----------------------------------------------------
-### 4. OUTPUT RULES
+### 3. OUTPUT RULES
 
 - Output ONLY valid JSON.
-- NO natural language outside JSON.
-- NO code fences (like ```json).
-- Keys MUST match input IDs exactly.
+- DO NOT output any natural language.
+- DO NOT wrap JSON in code fences (no ```json).
+- DO NOT include comments.
+- Keys MUST match the input function_id or instance_id exactly.
+- All required keys MUST appear even if values are null.
 
 -----------------------------------------------------
-Analyze the input workloads and return JSON.
+
+Analyze the input workloads and return ONLY the JSON prediction output.
+
 """
 
+
 # ---------------------------------------------------------
-# LLM CALL (JSON-only)
+# LLM CALL
 # ---------------------------------------------------------
 def analyze_with_llm(input_payload):
     response = client.chat.completions.create(
-        model="gpt-4o-mini",  # fast / cheap model, replace with gpt-5 if needed
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": json.dumps(input_payload, indent=2)}
         ],
-        temperature=0
+        temperature=0,
     )
 
-    txt = response.choices[0].message.content.strip()
+    text = response.choices[0].message.content.strip()
 
     try:
-        return json.loads(txt)
+        return json.loads(text)
     except json.JSONDecodeError:
-        print("\n❌ ERROR: LLM returned invalid JSON:")
-        print(txt)
+        print("\n❌ ERROR: LLM returned invalid JSON:\n")
+        print(text)
         return {}
 
+
 # ---------------------------------------------------------
-# STRICT EVALUATION LOGIC (Final Version)
+# EVALUATION ( STRICT )
 # ---------------------------------------------------------
 def evaluate(pred, ground_truth_list):
-
     results = []
     correct = 0
     total = 0
 
     for entry in ground_truth_list:
-        input_block = entry["input"]
+        input_block = entry.get("input", entry)
         truth = entry["ground_truth"]
 
-        # Primary identifier
-        key = input_block.get("instance_id") or input_block.get("function_id")
-        pred_block = pred.get(key, {})
+        # Determine ID
+        if "instance_id" in input_block:
+            rid = input_block["instance_id"]
+        elif "function_id" in input_block:
+            rid = input_block["function_id"]
+        else:
+            continue
 
-        # Strict comparisons
+        pred_block = pred.get(rid, {})
+
+        # STRICT COMPARISON
         issue_correct = pred_block.get("issue_detected") == truth.get("issue_detected")
         action_correct = pred_block.get("recommended_action") == truth.get("recommended_action")
-        optimal_correct = pred_block.get("optimal_parameters") == truth.get("optimal_parameters")
 
         results.append({
-            key: {
+            rid: {
                 "issue_detected_correct": issue_correct,
-                "recommended_action_correct": action_correct,
-                "optimal_parameters_correct": optimal_correct
+                "recommended_action_correct": action_correct
             }
         })
 
-        total += 3
-        correct += (issue_correct + action_correct + optimal_correct)
+        correct += int(issue_correct) + int(action_correct) 
+        total += 2
 
     accuracy = correct / total if total > 0 else 0
     return results, accuracy
 
+
 # ---------------------------------------------------------
-# Batch process all workload JSON files in a folder
+# BATCH PROCESSING
 # ---------------------------------------------------------
 def batch_process(folder="workloads"):
-
     output_dir = "output_results"
     os.makedirs(output_dir, exist_ok=True)
 
-    for filename in os.listdir(folder):
-        if not filename.endswith(".json"):
+    for fname in os.listdir(folder):
+        if not fname.endswith(".json"):
             continue
 
-        file_path = os.path.join(folder, filename)
-        print(f"\n🚀 Processing file: {filename}")
+        path = os.path.join(folder, fname)
+        print(f"\n🚀 Processing file: {fname}")
 
-        with open(file_path, "r") as f:
+        with open(path, "r") as f:
             data = json.load(f)
 
-        # Format LLM input: { id : input_block }
-        formatted_input = {}
+        # Convert list → dict input for LLM
+        formatted = {}
         for entry in data:
-            input_block = entry.get("input", entry)
-            key = input_block.get("instance_id") or input_block.get("function_id")
-            formatted_input[key] = input_block
+            inp = entry.get("input", entry)
 
-        # Run inference
-        pred = analyze_with_llm(formatted_input)
+            if "resource_type" in inp and inp["resource_type"] == "lambda_function":
+                key = inp["function_id"]
+            else:
+                key = inp.get("instance_id")
+
+            formatted[key] = inp
+
+        # LLM prediction
+        pred = analyze_with_llm(formatted)
 
         # Evaluate
-        evaluation, accuracy = evaluate(pred, data)
+        eval_result, acc = evaluate(pred, data)
 
-        # Save output
-        output = {
+        out = {
             "predictions": pred,
-            "evaluation": evaluation,
-            "overall_accuracy": accuracy
+            "evaluation": eval_result,
+            "overall_accuracy": acc
         }
 
-        out_file = os.path.join(output_dir, filename.replace(".json", "_output.json"))
-        with open(out_file, "w") as f:
-            json.dump(output, f, indent=2)
+        # Save
+        out_path = os.path.join(output_dir, fname.replace(".json", "_output.json"))
+        with open(out_path, "w") as f:
+            json.dump(out, f, indent=2)
 
-        print(f"✅ Saved → {out_file}")
-        print(f"🎯 Accuracy: {accuracy:.2%}")
+        print(f"✅ Saved → {out_path}")
+
 
 # ---------------------------------------------------------
-# Main
+# Run Script
 # ---------------------------------------------------------
 if __name__ == "__main__":
     batch_process("workloads")

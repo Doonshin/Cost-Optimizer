@@ -1,0 +1,67 @@
+{
+  "predictions": {
+    "EC2-A": {
+      "issue_detected": "idle_instance",
+      "recommended_action": "stop_or_terminate"
+    },
+    "EC2-B": {
+      "issue_detected": "throttling",
+      "recommended_action": "scale_up_instance"
+    },
+    "EC2-C": {
+      "issue_detected": "idle_instance",
+      "recommended_action": "stop_or_terminate"
+    },
+    "EC2-D": {
+      "issue_detected": "idle_instance",
+      "recommended_action": "stop_or_terminate"
+    },
+    "EC2-E": {
+      "issue_detected": "healthy_utilization",
+      "recommended_action": "no_change"
+    },
+    "EC2-F": {
+      "issue_detected": "deprecated_os_security_risk",
+      "recommended_action": "upgrade_or_rebuild_instance"
+    }
+  },
+  "evaluation": [
+    {
+      "EC2-A": {
+        "issue_detected_correct": false,
+        "recommended_action_correct": false
+      }
+    },
+    {
+      "EC2-B": {
+        "issue_detected_correct": false,
+        "recommended_action_correct": true
+      }
+    },
+    {
+      "EC2-C": {
+        "issue_detected_correct": true,
+        "recommended_action_correct": true
+      }
+    },
+    {
+      "EC2-D": {
+        "issue_detected_correct": false,
+        "recommended_action_correct": false
+      }
+    },
+    {
+      "EC2-E": {
+        "issue_detected_correct": true,
+        "recommended_action_correct": true
+      }
+    },
+    {
+      "EC2-F": {
+        "issue_detected_correct": true,
+        "recommended_action_correct": true
+      }
+    }
+  ],
+  "overall_accuracy": 0.3888888888888889
+}

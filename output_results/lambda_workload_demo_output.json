@@ -1,0 +1,37 @@
+{
+  "predictions": {
+    "function_1": {
+      "issue_detected": "healthy",
+      "recommended_action": "none"
+    },
+    "function_2": {
+      "issue_detected": "throttling",
+      "recommended_action": "resolve_throttling"
+    },
+    "function_3": {
+      "issue_detected": "timeout_failure",
+      "recommended_action": "increase_timeout"
+    }
+  },
+  "evaluation": [
+    {
+      "function_1": {
+        "issue_detected_correct": false,
+        "recommended_action_correct": false
+      }
+    },
+    {
+      "function_2": {
+        "issue_detected_correct": false,
+        "recommended_action_correct": false
+      }
+    },
+    {
+      "function_3": {
+        "issue_detected_correct": true,
+        "recommended_action_correct": true
+      }
+    }
+  ],
+  "overall_accuracy": 0.2222222222222222
+}
